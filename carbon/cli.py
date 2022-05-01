@@ -43,7 +43,7 @@ def main():
         add_help=False
     )
     cwd = os.getcwd()
-    parser.add_argument('-v', '--version', help='check the current pystark version installed', action='store_true')
+    parser.add_argument('-v', '--version', help='check the current version installed', action='store_true')
     parser.add_argument('-f', '--file', help='pass file path to read code from', action='store')
     parser.add_argument('-c', '--code', help='pass some code to make carbon', action='store')
     if len(sys.argv) == 1:

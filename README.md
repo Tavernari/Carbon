@@ -89,7 +89,7 @@ $ carbon-app
 Create beautiful carbon code images using python or terminal
 
 Options:
-  -v, --version         check the current pystark version installed
+  -v, --version         check the current version installed
   -f FILE, --file FILE  pass file path to read code from
   -c CODE, --code CODE  pass some code to make carbon
 
