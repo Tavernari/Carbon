@@ -1,4 +1,27 @@
-import json
+# Carbon - Create beautiful carbon code images using python or terminal
+# Copyright (C) 2022 Stark Bots <https://github.com/StarkBotsIndustries>
+#
+# This file is part of Carbon.
+#
+# Carbon is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Lesser General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# Carbon is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public License
+# along with Carbon. If not, see <https://www.gnu.org/licenses/>.
+
+
+import os
+from pyppeteer import launch
+
+DOWNLOAD_FOLDER = os.getcwd()
+
 
 defaultOptions = {
     "backgroundColor": "rgba(171, 184, 195, 1)",
@@ -60,19 +83,18 @@ ignoredOptions = [
 ]
 
 
-def validateBody(body_):
+def validateBody(body_: dict):
     validatedBody = {}
     if not body_['code']:
-        raise Exception("code is required for creating carbon")
+        raise Exception("Code is required for creating carbon")
 
     for option in body_:
         if option in ignoredOptions:
             print(f"Unsupported option: {option} found. Ignoring!")
             continue
-        if (not (option in defaultOptions)):
-            continue
+        if not (option in defaultOptions):
             print(f"Unexpected option: {option} found. Ignoring!")
-            #raise Exception(f"Unexpected option: {option}")
+            continue
         validatedBody[option] = body_[option]
     return validatedBody
 
@@ -82,7 +104,7 @@ def createURLString(validatedBody):
     first = True
     url = ""
     try:
-        if validatedBody['backgroundColor'].startswith('#') or checkHex(validatedBody['backgroundColor'].upper()) == True:
+        if validatedBody['backgroundColor'].startswith('#') or checkHex(validatedBody['backgroundColor'].upper()):
             validatedBody['backgroundColor'] = hex2rgb(
                 validatedBody['backgroundColor'])
     except KeyError:
@@ -100,10 +122,37 @@ def createURLString(validatedBody):
 
 def hex2rgb(h):
     h = h.lstrip('#')
-    return ('rgb'+str(tuple(int(h[i:i+2], 16) for i in (0, 2, 4))))
+    return 'rgb'+str(tuple(int(h[i:i+2], 16) for i in (0, 2, 4)))
+
 
 def checkHex(s):
     for ch in s:
-        if ((ch < '0' or ch > '9') and (ch < 'A' or ch > 'F')):  
+        if (ch < '0' or ch > '9') and (ch < 'A' or ch > 'F'):
             return False
     return True
+
+
+async def open_carbonnowsh(url):
+    browser = await launch(
+        defaultViewPort=None,
+        handleSIGINT=False,
+        handleSIGTERM=False,
+        handleSIGHUP=False,
+        headless=True,
+        args=['--no-sandbox', '--disable-setuid-sandbox']
+    )
+    page = await browser.newPage()
+    await page._client.send('Page.setDownloadBehavior', {
+        'behavior': 'allow',
+        'downloadPath': DOWNLOAD_FOLDER
+    })
+    await page.goto(url, timeout=100000)
+    return browser, page
+
+
+async def make_carbon(url, path):
+    browser, page = await open_carbonnowsh(url)
+    element = await page.querySelector("#export-container  .container-bg")
+    await element.screenshot({'path': path})
+    await browser.close()
+    return path

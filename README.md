@@ -1,99 +1,140 @@
-# Carbon API [Unofficial]
----
-<p align="center">
-    <a href="https://github.com/carbon-app/carbon">
-        <img src="resources/carbon.png" alt="Carbon">
-    </a>
-    <br>
-    <b>Unofficial API</b>
-    <br>
-</p>
+# Carbon
 
-### Show some :heart: and :star: the repo
+> A star ⭐ from you means a lot
 
-[![GitHub stars](https://img.shields.io/github/stars/cyberboysumanjay/Carbon-API.svg?style=social&label=Star)](https://github.com/cyberboysumanjay/JioSaavnAPI)
-![GitHub followers](https://img.shields.io/github/followers/cyberboysumanjay.svg?style=social&label=Follow)
-[![Telegram Channel](https://img.shields.io/badge/Telegram-Channel-orange)](https://t.me/sjprojects)
+Create beautiful carbon code images using python or terminal.
 
-## Carbon API written in Python using Flask and Pyppeteer
-[![made-with-python](https://img.shields.io/badge/Made%20with-Python-1f425f.svg)](https://www.python.org/) [![Open Source Love svg1](https://badges.frapsoft.com/os/v1/open-source.svg?v=103)](https://github.com/ellerbrock/open-source-badges/)
+This is an unofficial asynchronous python wrapper for carbon.now.sh which can be also be used inside cli.
 
-> **Carbon**  makes it easy to create and share beautiful images of your source code
+## Installation
 
-#### Usage
-You can use the API by sending a GET or a POST request using these params
+### PyPI (recommended)
 
-| parameter              | default                    | type    | description                                      |
-| ---------------------- | -------------------------- | ------- | ------------------------------------------------ |
-| `code` (required)      |                            | string  | Code snippet                                     |
-| `backgroundColor`      | `"rgba(171, 184, 195, 1)"` | string  | Hex or rgba color                                |
-| `dropShadow`           | `true`                     | boolean | Turn on/off shadow                               |
-| `dropShadowBlurRadius` | `"68px"`                   | string  | shadow blur radius                               |
-| `dropShadowOffsetY`    | `"20px"`                   | string  | shadow offset y                                  |
-| `exportSize`           | `"2x"`                     | string  | resolution of exported image, e.g. `1x`, `3x`    |
-| `fontSize`             | `"14px"`                   | string  | font size                                        |
-| `fontFamily`           | `"Hack"`                   | string  | font family, e.g. `JetBrains Mono`, `Fira Code`. |
-| `firstLineNumber`      | `1`                        | number  | first line number                                |
-| `language`             | `"auto"`                   | string  | programing language for properly highlighting    |
-| `lineNumbers`          | `false`                    | boolean | turn on/off line number                          |
-| `paddingHorizontal`    | `"56px"`                   | string  | horizontal padding                               |
-| `paddingVertical`      | `"56px"`                   | string  | vertical padding                                 |
-| `theme`                | `"seti"`                   | string  | code theme                                       |
-| `watermark`            | `false`                    | boolean | turn on/off watermark                            |
-| `widthAdjustment`      | `true`                     | boolean | turn on/off width adjustment                     |
-| `windowControls`       | `true`                     | boolean | turn on/off window controls                      |
-| `windowTheme`          | `"none"`                   | string  | window theme                                     |
-
-### GET `/`
-Params are encoded in url
-```bash
-https://carbonnowsh.herokuapp.com/?code=Made+with+Love+in+India+by+Sumanjay&theme=darcula&backgroundColor=rgba(144, 19, 254, 100)
+```shell
+pip install carbon-api
 ```
 
-### POST `/`
+### Directly from Source
 
-**Body** is JSON with these params:
+```shell
+git clone https://github.com/StarkBotsIndustries/Carbon
 
-```json
-{
-    "backgroundColor": "rgba(144, 19, 254, 100)",
-    "code": "Made with Love in India by Sumanjay",
-    "theme": "dracula"
-}
+cd Carbon
+
+python setup.py install
 ```
 
-### RESPONSE
-**Response** is an image of a code or text snippet.
-<p align="center">
-    <a href="https://github.com/cyberboysumanjay">
-        <img src="resources/response.png" alt="Response">
-    </a>
-</p>
+## Usage
 
-#### Deploy Option
+### Using as an Asynchronous Library
 
-* **[Heroku](https://www.heroku.com/) Method** 
-  [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/cyberboysumanjay/Carbon-API/tree/master)
+```python
+import asyncio
+from carbon import Carbon
 
-* **Other Method** 
+client = Carbon()
 
-  ```bash
-  # Clone the repo
-  git clone https://github.com/cyberboysumanjay/Carbon-API
-  cd Carbon-API
 
-  # Create virtualenv
-  virtualenv -p /usr/bin/python3 venv
-  ../venv/bin/activate
+async def main():
+    img = await client.create("Your code here")
+    print(img)
 
-  # Install requirements
-  pip3 install -r requirements.txt
 
-  # Finally run the app
-  python3 app.py
-  ```
-### Made with ❤️️ in India
-### Copyright & License 
+asyncio.run(main())
+```
 
-* Copyright (C) 2020 by [Sumanjay](https://github.com/cyberboysumanjay)
-* Licensed under the terms of the [GNU GPL Version 3](https://github.com/cyberboysumanjay/Carbon-API/blob/master/LICENSE)
+## Options
+
+You can pass globally usable options' values to `Carbon` class
+
+```python
+from carbon import Carbon
+
+client = Carbon(
+    downloads_dir=os.getcwd(),  # Defaults to current directory
+    colour="rgba(171, 184, 195, 1)",  # Hex or rgba color
+    shadow=True,  # Turn on/off shadow
+    shadow_blur_radius="68px",
+    shadow_offset_y="20px",
+    export_size="2x",  # resolution of exported image, e.g. 1x, 3x
+    font_size="14px",
+    font_family= "Hack",  # font family, e.g. JetBrains Mono, Fira Code.
+    first_line_number=1,
+    language="auto",  # programing language for properly highlighting
+    line_numbers=False,  # turn on/off, line number
+    horizontal_padding="56px",
+    vertical_padding="56px",
+    theme="seti",  # code theme
+    watermark=False,  # turn on/off watermark
+    width_adjustment=True,  # turn on/off width adjustment
+    window_controls= True,  # turn on/off window controls
+    window_theme=None
+)
+```
+
+Same options are also available in `Carbon.create` method, which override the global options.
+
+You can also specify the file name to the create method. Relative Path to the image will be returned by the function.
+
+```python
+path = client.create(file="my-code.png")  # Path will be downloads_dir/file 
+print(path)
+```
+
+### Using CLI
+
+```shell
+$ carbon-app
+
+Create beautiful carbon code images using python or terminal
+
+Options:
+  -v, --version         check the current pystark version installed
+  -f FILE, --file FILE  pass file path to read code from
+  -c CODE, --code CODE  pass some code to make carbon
+
+Enjoy the program :)
+
+```
+
+You can pass the file path using the file argument.
+
+```shell
+carbon-app --file file_path
+```
+
+or simply
+
+```shell
+carbon-app -f file_path
+```
+
+You can also directly pass code (not recommended)
+
+```shell
+carbon-app --code your_code_here
+```
+
+or simply
+
+```shell
+carbon-app -c your_code_here
+```
+
+CLI is in beta version therefore other options aren't available currently.
+
+## Credits
+
+- [cyberboysumanjay](https://github.com/cyberboysumanjay) for [Carbon-API](https://github.com/cyberboysumanjay/Carbon-API).
+
+## Community and Support
+
+Telegram Channel - [StarkBots](https://t.me/StarkBots)
+
+Telegram Chat - [StarkBotsChat](https://t.me/StarkBotsChat)
+
+## Copyright and License
+
+- Copyright (C) 2022 **Stark Bots** <<https://github.com/StarkBotsIndustries>>
+
+- Licensed under the terms of [GNU Lesser General Public License v3 or later (LGPLv3+)](https://github.com/StarkBotsIndustries/Carbon/blob/master/LICENSE)

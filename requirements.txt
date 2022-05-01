@@ -1,6 +1,1 @@
-asyncio
-Flask
-flask-cors
-gunicorn
-logger
 pyppeteer
