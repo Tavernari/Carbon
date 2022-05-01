@@ -17,5 +17,5 @@
 # along with Carbon. If not, see <https://www.gnu.org/licenses/>.
 
 
-__version__ = "0.0.2"
+__version__ = "0.0.3"
 __description__ = "Create beautiful carbon code images using python or terminal"
