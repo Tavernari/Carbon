@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with Carbon. If not, see <https://www.gnu.org/licenses/>.
 
-
+from __future__ import annotations
 import os
 from carbon import utils
 from urllib.parse import quote
