@@ -24,6 +24,10 @@ cd Carbon
 python setup.py install
 ```
 
+## Example
+
+![Example Carbon Image](assets/carbon.png)
+
 ## Usage
 
 ### Using as an Asynchronous Library
@@ -74,10 +78,10 @@ client = Carbon(
 
 Same options are also available in `Carbon.create` method, which override the global options.
 
-You can also specify the file name to the create method. Relative Path to the image will be returned by the function.
+You can also specify the file name to the create method. Path to the image will be returned by the function.
 
 ```python
-path = client.create(file="my-code.png")  # Path will be downloads_dir/file 
+path = await client.create(file="my-code.png")  # Path will be downloads_dir/file 
 print(path)
 ```
 
@@ -100,14 +104,24 @@ Enjoy the program :)
 You can pass the file path using the file argument.
 
 ```shell
-carbon-app --file file_path
+carbon-app --file path_to_file
 ```
 
 or simply
 
 ```shell
-carbon-app -f file_path
+carbon-app -f path_to_file
 ```
+
+For example:
+
+```shell
+carbon-app --file main.py
+```
+
+Here `main.py` should be in the same directory.
+
+---
 
 You can also directly pass code (not recommended)
 
@@ -121,7 +135,7 @@ or simply
 carbon-app -c your_code_here
 ```
 
-CLI is in beta version therefore other options aren't available currently.
+CLI is in beta version and other options aren't available currently. If you're interested in that functionality, let me know.
 
 ## Credits
 

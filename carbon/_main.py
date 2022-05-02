@@ -18,7 +18,7 @@
 
 from __future__ import annotations
 import os
-from carbon import utils
+from carbon import _utils
 from urllib.parse import quote
 
 
@@ -52,6 +52,7 @@ class Carbon:
         width_adjustment: bool = True,  # turn on/off width adjustment
         window_controls: bool = True,  # turn on/off window controls
         window_theme=None,  # "none",
+        chromium_path: str = None
     ):
         if not os.path.exists(downloads_dir):
             os.makedirs(downloads_dir)
@@ -73,12 +74,13 @@ class Carbon:
         self.width_adjustment = width_adjustment
         self.window_controls = window_controls
         self.window_theme = window_theme
+        self.chromium_path = chromium_path
 
     async def create(
         self,
         code: str,
         *,
-        colour=None,
+        colour: str = None,
         shadow: bool = None,
         shadow_blur_radius: str = None,
         shadow_offset_y: str = None,
@@ -96,7 +98,7 @@ class Carbon:
         window_controls: bool = None,
         window_theme=None,
         downloads_dir: str = None,
-        file: str = None
+        file: str = None,
     ):
         if not colour:
             colour = self.colour
@@ -134,10 +136,8 @@ class Carbon:
             window_controls = self.window_controls
         if not downloads_dir:
             downloads_dir = self.downloads_dir
-        # if not window_theme:
-        #     window_theme = "none"
         if not file:
-            file = "carbon.png"
+            file = _utils.random_file_name()
         shadow = boolean(shadow)
         line_numbers = boolean(line_numbers)
         watermark = boolean(watermark)
@@ -163,9 +163,7 @@ class Carbon:
             "windowControls": window_controls,
             "windowTheme": window_theme,
         }
-        carbonURL = utils.createURLString(data)
-        # validatedBody = utils.validateBody(data)
-        # carbonURL = utils.createURLString(validatedBody)
+        carbonURL = _utils.createURLString(data)
         path = downloads_dir + file
-        await utils.make_carbon(carbonURL, path)
+        path = await _utils.make_carbon(carbonURL, path, chromium=self.chromium_path)
         return path

@@ -19,17 +19,13 @@
 
 import os
 import sys
-import string
-import secrets
+import time
 import asyncio
 import argparse
-from carbon.main import Carbon
-from carbon.constants import __description__, __version__
-
-
-def random():
-    alphabet = string.ascii_lowercase + string.digits
-    return ''.join(secrets.choice(alphabet) for _ in range(6))
+from termcolor import colored
+from carbon._main import Carbon
+from carbon._utils import random_file_name
+from carbon._constants import __description__, __version__
 
 
 def main():
@@ -40,12 +36,13 @@ def main():
         usage='%(prog)s [options]',
         epilog='Enjoy the program :)',
         allow_abbrev=False,
-        add_help=False
+        add_help=True
     )
     cwd = os.getcwd()
-    parser.add_argument('-v', '--version', help='check the current version installed', action='store_true')
-    parser.add_argument('-f', '--file', help='pass file path to read code from', action='store')
-    parser.add_argument('-c', '--code', help='pass some code to make carbon', action='store')
+    parser.add_argument('-v', '--version', help='Check the current version installed', action='store_true')
+    parser.add_argument('-f', '--file', help='Pass file path to read code from', action='store')
+    parser.add_argument('-c', '--code', help='Pass some code to make carbon', action='store')
+    parser.add_argument('-n', '--name', help='Specify a name for the image, otherwise a random name will be used', action='store')
     if len(sys.argv) == 1:
         parser.print_help()
         sys.exit(1)
@@ -61,5 +58,13 @@ def main():
         text = args.carbon
     else:
         return
-    image = asyncio.run(client.create(text, file="carbon-"+random()+".png"))
-    print(image)
+    if args.name:
+        name = args.name + ".png" if "." not in args.name else args.name
+    else:
+        name = random_file_name()
+    pref = colored(">", "yellow")
+    print(pref, "Creating Carbon...")
+    image = asyncio.run(client.create(text, file=name))
+    print(pref, "Saved as :", end=" ")
+    time.sleep(0.25)
+    print(colored(image.rsplit("/", 1)[-1], "green"))

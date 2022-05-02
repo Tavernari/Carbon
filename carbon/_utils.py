@@ -18,6 +18,8 @@
 
 
 import os
+import string
+import secrets
 from pyppeteer import launch
 
 DOWNLOAD_FOLDER = os.getcwd()
@@ -107,6 +109,9 @@ def createURLString(validatedBody):
         if validatedBody['backgroundColor'].startswith('#') or checkHex(validatedBody['backgroundColor'].upper()):
             validatedBody['backgroundColor'] = hex2rgb(
                 validatedBody['backgroundColor'])
+        for f in ["fontFamily", "language", "theme", "windowTheme"]:
+            if validatedBody[f]:
+                validatedBody[f] = validatedBody[f].lower()
     except KeyError:
         pass
     for option in validatedBody:
@@ -132,8 +137,9 @@ def checkHex(s):
     return True
 
 
-async def open_carbonnowsh(url):
+async def make_carbon(url, path, chromium: str = None):
     browser = await launch(
+        executablePath=chromium,
         defaultViewPort=None,
         handleSIGINT=False,
         handleSIGTERM=False,
@@ -141,18 +147,28 @@ async def open_carbonnowsh(url):
         headless=True,
         args=['--no-sandbox', '--disable-setuid-sandbox']
     )
-    page = await browser.newPage()
-    await page._client.send('Page.setDownloadBehavior', {
-        'behavior': 'allow',
-        'downloadPath': DOWNLOAD_FOLDER
-    })
-    await page.goto(url, timeout=100000)
-    return browser, page
-
-
-async def make_carbon(url, path):
-    browser, page = await open_carbonnowsh(url)
-    element = await page.querySelector("#export-container  .container-bg")
-    await element.screenshot({'path': path})
-    await browser.close()
+    try:
+        page = await browser.newPage()
+        await page._client.send('Page.setDownloadBehavior', {
+            'behavior': 'allow',
+            'downloadPath': DOWNLOAD_FOLDER
+        })
+        await page.goto(url, timeout=100000)
+        element = await page.querySelector("#export-container  .container-bg")
+        try:
+            await element.screenshot({'path': path})
+        except ValueError as e:
+            if "Unsupported screenshot mime type" in str(e):
+                path = path + ".png"
+                await element.screenshot({'path': path})
+            else:
+                raise
+    finally:
+        await browser.close()
     return path
+
+
+def random_file_name():
+    letters = string.ascii_lowercase + string.digits
+    random = ''.join(secrets.choice(letters) for _ in range(6))
+    return f'carbon-{random}.png'

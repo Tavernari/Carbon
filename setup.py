@@ -26,7 +26,7 @@ with open("README.md", encoding="utf-8") as f:
 with open("requirements.txt", encoding="utf-8") as r:
     install_requires = [i.strip() for i in r if not i.startswith('#')]
 
-with open("carbon/constants.py", "r", encoding="utf-8") as f:
+with open("carbon/_constants.py", "r", encoding="utf-8") as f:
     text = f.read()
     pat = r"['\"]([^'\"]+)['\"]"
     version = re.search("__version__ = "+pat, text).group(1)
@@ -72,7 +72,7 @@ setup(
     },
     entry_points={
         'console_scripts': [
-            'carbon-app = carbon.cli:main',
+            'carbon-app = carbon._cli:main',
         ],
     },
 )

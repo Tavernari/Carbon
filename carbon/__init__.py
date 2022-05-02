@@ -17,4 +17,5 @@
 # along with Carbon. If not, see <https://www.gnu.org/licenses/>.
 
 
-from .main import Carbon
+from ._main import Carbon
+from ._constants import __version__
