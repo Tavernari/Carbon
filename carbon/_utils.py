@@ -154,7 +154,7 @@ async def make_carbon(url, path, chromium: str = None):
             'downloadPath': DOWNLOAD_FOLDER
         })
         await page.goto(url, timeout=100000)
-        element = await page.querySelector("#export-container  .container-bg")
+        element = await page.querySelector("#export-container")
         try:
             await element.screenshot({'path': path})
         except ValueError as e:
